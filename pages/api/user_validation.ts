@@ -37,7 +37,7 @@ export default async function handler(req: any, res: any) {
     } else {
         return res.json(
             {
-              user: userData[0],
+              user: {sessionId:session_token, ...userData[0]},
               success: true,
             },
             {
