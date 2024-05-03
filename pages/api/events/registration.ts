@@ -2,7 +2,7 @@ import Cookies from "cookies";
 import clientPromise from "@/lib/connection";
 const { createHash } = require("node:crypto");
 import { NextResponse } from "next/server";
-import { bulkUpload } from "@/pages/components/bulkUpload";
+import bulkUpload from "@/pages/components/bulkUpload";
 
 export default async function handler(req: any, res: any) {
   if (req.method == "POST") {
