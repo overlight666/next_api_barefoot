@@ -9,7 +9,10 @@ export default async function handler(req: any, res: any) {
     try {
         const event_name = req.body["event_name"];
         const event_type = req.body["event_type"];
-        const event_date = req.body["event_date"];
+        const date_start = req.body["date_start"];
+        const date_end = req.body["date_end"];
+        const time_start = req.body["time_start"];
+        const time_end = req.body["time_end"];
         const user_id = req.body["user_id"];
         const images = req.body["images"];
       
@@ -54,7 +57,10 @@ export default async function handler(req: any, res: any) {
     
         const currentDate = new Date().toUTCString();
         const bodyObject: any = {
-          event_date: event_date,
+          date_start: date_start,
+          date_end: date_end,
+          time_start: time_start,
+          time_end: time_end,
           event_name: event_name,
           event_type: event_type,
           user_id: user_id,
