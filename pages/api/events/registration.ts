@@ -10,6 +10,7 @@ export default async function handler(req: any, res: any) {
         const event_name = req.body["event_name"];
         const event_type = req.body["event_type"];
         const event_date = req.body["event_date"];
+        const user_id = req.body["user_id"];
         const images = req.body["images"];
       
         if (event_name === '') {
@@ -56,6 +57,7 @@ export default async function handler(req: any, res: any) {
           event_date: event_date,
           event_name: event_name,
           event_type: event_type,
+          user_id: user_id,
           created_at: currentDate,
         };
         await db.collection("Profiles").insertOne(bodyObject);
