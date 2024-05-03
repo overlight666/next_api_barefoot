@@ -9,9 +9,9 @@ mgs.connect(uri, {
   })
   .then(() => console.log("MongoDB connected"))
   .catch((err: any) => console.log(err));
-const bulkUpload =  async (params: any) => {
-        const imageData = params.images;
-        if (imageData.length > 0) {
+  export default function bulkUpload (params: any) {
+        const imageData: any = params.images;
+        if (imageData && imageData.length > 0) {
           imageData.map((ig: any) => {
             const decoded: any = JSON.parse(Base64.atob(ig));
             const imageBuffer = Buffer.from(decoded.base64, "base64");
@@ -33,5 +33,3 @@ const bulkUpload =  async (params: any) => {
           return false
         }
   }
-
-  export default bulkUpload

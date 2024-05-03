@@ -59,7 +59,7 @@ export default async function handler(req: any, res: any) {
           created_at: currentDate,
         };
         await db.collection("Profiles").insertOne(bodyObject);
-        bulkUpload({id: bodyObject._id, images: images}).then((response: any) => {
+        const response = bulkUpload({id: bodyObject._id, images: images})
             if(response) {
                 return res.json(
                     {
@@ -82,7 +82,6 @@ export default async function handler(req: any, res: any) {
                     }
                   );
             }
-        })
        
     } catch (error: any) {
         return res.json({error: error.message}, {status: 500})
