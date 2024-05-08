@@ -3,6 +3,7 @@ import clientPromise from "@/lib/connection";
 const { createHash } = require("node:crypto");
 import { NextResponse } from "next/server";
 import bulkUpload from "@/pages/components/bulkUpload";
+import saveEventLocation from "@/pages/components/saveEventLocation";
 
 export default async function handler(req: any, res: any) {
   if (req.method == "POST") {
@@ -15,7 +16,21 @@ export default async function handler(req: any, res: any) {
         const time_end = req.body["time_end"];
         const user_id = req.body["user_id"];
         const images = req.body["images"];
-      
+        const eventLocation = req.body["event_location"];
+        let newLoc: any = {};
+        try {
+          newLoc = JSON.parse(eventLocation)
+        } catch (error) {
+          return res.json(
+            {
+              message: "Event location is required!",
+              success: false,
+            },
+            {
+              status: 422,
+            })
+        }
+
         if (event_name === '') {
             return res.json(
             {
@@ -39,7 +54,7 @@ export default async function handler(req: any, res: any) {
                 }
               );
         }
-        if (event_date === '') {
+        if (date_start === '') {
             //   res.redirect("/signup?msg=The two passwords don't match");
                 return res.json(
                 {
@@ -67,6 +82,17 @@ export default async function handler(req: any, res: any) {
           created_at: currentDate,
         };
         await db.collection("Profiles").insertOne(bodyObject);
+        const locRes = saveEventLocation({eventId: bodyObject._id, name: bodyObject.event_name, latitude: newLoc.latitude, longitude: newLoc.longitude})
+        if(!locRes) {
+          return res.json(
+            {
+              message: "Failed to save location!",
+              success: false,
+            },
+            {
+              status: 422,
+            })
+        }
         const response = bulkUpload({id: bodyObject._id, images: images})
             if(response) {
                 return res.json(

@@ -1,5 +1,5 @@
 const mgs = require("mongoose");
-const MyImage = require('../../models/image');
+const {MyImage} = require('../../models/models');
 import { uri } from "@/lib/constant";
 import Base64 from "@/lib/base64";
 mgs.connect(uri, {
