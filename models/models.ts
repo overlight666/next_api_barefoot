@@ -21,7 +21,7 @@ const imageSchema = new mongoose.Schema({
 
 const eventSchema = new mongoose.Schema({
     name: String,
-    eventId: String,
+    event_id: String,
     location: {
       type: {
         type: String, // Don't do `{ location: { type: String } }`

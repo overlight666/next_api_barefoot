@@ -38,7 +38,7 @@ export const bulkUpload = (params: any) => {
 
 export const saveEventLocation = (params: any) => {
     const myEvent = { type: 'Point', coordinates: [params.latitude, params.longitude] };
-    return EventLocation.create({ eventId: params.eventId, name: params.name, location: myEvent }).then(() => {
+    return EventLocation.create({ event_id: params.eventId, name: params.name, location: myEvent }).then(() => {
         return true
     }).catch((e: any) => {
         console.log(e)
