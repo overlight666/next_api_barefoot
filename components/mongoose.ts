@@ -1,15 +1,16 @@
+/* eslint-disable import/no-anonymous-default-export */
 const mgs = require("mongoose");
-const {MyImage} = require('../../models/models');
+const {MyImage, EventLocation} = require('@/models/models');
 import { uri } from "@/lib/constant";
 import Base64 from "@/lib/base64";
 mgs.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: 'Uploads',
+    dbName: 'EventData',
   })
   .then(() => console.log("MongoDB connected"))
   .catch((err: any) => console.log(err));
-  export default function bulkUpload (params: any) {
+export const bulkUpload = (params: any) => {
         const imageData: any = params.images;
         if (imageData && imageData.length > 0) {
           imageData.map((ig: any) => {
@@ -32,4 +33,15 @@ mgs.connect(uri, {
         } else {
           return false
         }
+  }
+
+
+export const saveEventLocation = (params: any) => {
+    const myEvent = { type: 'Point', coordinates: [params.latitude, params.longitude] };
+    return EventLocation.create({ eventId: params.eventId, name: params.name, location: myEvent }).then(() => {
+        return true
+    }).catch((e: any) => {
+        console.log(e)
+        return false
+    })
   }
