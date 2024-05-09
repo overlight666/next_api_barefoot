@@ -13,7 +13,7 @@ mgs.connect(uri, {
 export const bulkUpload = (params: any) => {
         const imageData: any = params.images;
         if (imageData && imageData.length > 0) {
-          imageData.map((ig: any) => {
+          imageData.map(async (ig: any) => {
             const decoded: any = JSON.parse(Base64.atob(ig));
             const imageBuffer = Buffer.from(decoded.base64, "base64");
             const m = new MyImage({
@@ -22,7 +22,7 @@ export const bulkUpload = (params: any) => {
               data: imageBuffer,
               event_id: params.event_id
             });
-            m.save().then(() => {
+           await m.save().then(() => {
             })
               .catch((error: any) => {
                 console.log(error)
