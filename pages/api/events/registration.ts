@@ -82,7 +82,7 @@ export default async function handler(req: any, res: any) {
         const col_res = await db.collection("Profiles").insertOne(bodyObject);
         if(col_res.insertedId) {
           const locRes = await mg.saveEventLocation({event_id: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude});
-          if(locRes) {
+          if(locRes && images.length > 0) {
             const response = await mg.bulkUpload({event_id: bodyObject._id, images: images})
             if(response) {
               return res.json(
