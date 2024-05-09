@@ -7,10 +7,12 @@ export default async function handler(req: any, res: any) {
         const db = client.db("Events");
         const events = await db.collection("Profiles").find({});
         const results = await events.toArray();
-        const data = [];
+        let data = [];
         if (results.length > 0) {
-          results.forEach((result: any, i: any) => {
-              const images = MyImage.find({});
+          data = await results.forEach(async (result: any, i: any) => {
+              const images = await MyImage.find({event_id: result.event_id});
+              console.log(images)
+              return {...result, images: images}
               
           });
       } else {
@@ -18,7 +20,7 @@ export default async function handler(req: any, res: any) {
       }
         res.json(
             {
-              data: results,
+              data: data,
               success: true,
             },
             {

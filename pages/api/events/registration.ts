@@ -16,6 +16,7 @@ export default async function handler(req: any, res: any) {
         const user_id = req.body["user_id"];
         const images = req.body["images"];
         const eventLocation = req.body["event_location"];
+        console.log(req.body)
         if(Object.keys(eventLocation).length === 0) {
           return res.json(
             {
@@ -80,10 +81,10 @@ export default async function handler(req: any, res: any) {
           created_at: currentDate,
         };
         const col_res = await db.collection("Profiles").insertOne(bodyObject);
-        if(col_res.insertedId) {
-          const locRes = await mg.saveEventLocation({event_id: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude});
-          if(locRes && images.length > 0) {
-            const response = await mg.bulkUpload({event_id: bodyObject._id, images: images})
+        if(col_res.insertedId && images.length > 0) {
+          const locRes = await mg.bulkUpload({event_id: col_res.insertedId, images: images})
+          if(locRes) {
+            const response = await mg.saveEventLocation({event_id: col_res.insertedId, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude});
             if(response) {
               return res.json(
                 {
