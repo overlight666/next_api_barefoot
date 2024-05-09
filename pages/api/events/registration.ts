@@ -80,7 +80,7 @@ export default async function handler(req: any, res: any) {
           created_at: currentDate,
         };
         await db.collection("Profiles").insertOne(bodyObject);
-        const locRes = mg.saveEventLocation({eventId: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude})
+        const locRes = mg.saveEventLocation({event_id: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude})
         if(!locRes) {
           return res.json(
             {
@@ -90,30 +90,32 @@ export default async function handler(req: any, res: any) {
             {
               status: 422,
             })
-        }
-        const response = mg.bulkUpload({id: bodyObject._id, images: images})
-            if(response) {
-                return res.json(
-                    {
-                      message: "User created successfully",
-                      success: true,
-                    },
-                    {
-                      status: 200,
-                    }
+        } else {
+          const response = mg.bulkUpload({event_id: bodyObject._id, images: images})
+          if(response) {
+              return res.json(
+                  {
+                    message: "User created successfully",
+                    success: true,
+                  },
+                  {
+                    status: 200,
+                  }
+              );
+          } else {
+              return res.json(
+                  {
+                    message: "User created successfully",
+                    success: true,
+                    imageFail: true
+                  },
+                  {
+                    status: 200,
+                  }
                 );
-            } else {
-                return res.json(
-                    {
-                      message: "User created successfully",
-                      success: true,
-                      imageFail: true
-                    },
-                    {
-                      status: 200,
-                    }
-                  );
-            }
+          }
+        }
+       
        
     } catch (error: any) {
         return res.json({error: error.message}, {status: 500})
