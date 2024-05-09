@@ -44,4 +44,22 @@ export const saveEventLocation = (params: any) => {
         console.log(e)
         return false
     })
-  }
+}
+
+export const deleteEventLocation = (params: any) => {
+  return EventLocation.deleteMany({event_id: params.event_id}).then(() => {
+      return true
+  }).catch((e: any) => {
+      console.log(e)
+      return false
+  })
+}
+
+export const deleteManyImages = (params: any) => {
+  return MyImage.deleteMany({event_id: params.event_id}).then(() => {
+      return true
+  }).catch((e: any) => {
+      console.log(e)
+      return false
+  })
+}

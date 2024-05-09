@@ -79,43 +79,56 @@ export default async function handler(req: any, res: any) {
           user_id: user_id,
           created_at: currentDate,
         };
-        await db.collection("Profiles").insertOne(bodyObject);
-        const locRes = mg.saveEventLocation({event_id: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude})
-        if(!locRes) {
+        const col_res = await db.collection("Profiles").insertOne(bodyObject);
+        if(col_res.insertedId) {
+          const locRes = await mg.saveEventLocation({event_id: bodyObject._id, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude});
+          if(locRes) {
+            const response = await mg.bulkUpload({event_id: bodyObject._id, images: images})
+            if(response) {
+              return res.json(
+                {
+                    success: true,
+                },
+                {
+                  status: 200,
+                })
+            } else {
+              await db.collection("Profiles").deleteOne({_id: bodyObject._id})
+              await mg.deleteEventLocation({event_id: bodyObject._id})
+              await mg.deleteManyImages({event_id: bodyObject._id})
+              return res.json(
+                {
+                    message: 'Failed to register event',
+                    success: false,
+                  },
+                  {
+                    status: 500,
+                })
+            }
+            
+          } else {
+            await db.collection("Profiles").deleteOne({_id: bodyObject._id})
+            await mg.deleteEventLocation({event_id: bodyObject._id})
+            return res.json(
+              {
+                  message: 'Failed to register event',
+                  success: false,
+                },
+                {
+                  status: 500,
+              })
+          }
+           
+        }else {
           return res.json(
             {
-              message: "Failed to save location!",
-              success: false,
-            },
-            {
-              status: 422,
+                message: 'Failed to register event',
+                success: false,
+              },
+              {
+                status: 500,
             })
-        } else {
-          const response = mg.bulkUpload({event_id: bodyObject._id, images: images})
-          if(response) {
-              return res.json(
-                  {
-                    message: "User created successfully",
-                    success: true,
-                  },
-                  {
-                    status: 200,
-                  }
-              );
-          } else {
-              return res.json(
-                  {
-                    message: "User created successfully",
-                    success: true,
-                    imageFail: true
-                  },
-                  {
-                    status: 200,
-                  }
-                );
-          }
         }
-       
        
     } catch (error: any) {
         return res.json({error: error.message}, {status: 500})
