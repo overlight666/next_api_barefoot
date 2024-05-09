@@ -63,3 +63,13 @@ export const deleteManyImages = (params: any) => {
       return false
   })
 }
+
+export const getImages = async (params: any) => {
+ const img = await MyImage.find({event_id: params.event_id})
+ return img
+}
+
+export const getLocation = async (params: any) => {
+  const loc = await EventLocation.findOne({event_id: params.event_id})
+  return loc
+ }

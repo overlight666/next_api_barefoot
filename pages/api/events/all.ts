@@ -1,4 +1,5 @@
 
+import { getImages, getLocation } from '@/components/mongoose';
 import clientPromise from '@/lib/connection';
 const {MyImage, EventLocation} = require('@/models/models');
 export default async function handler(req: any, res: any) {
@@ -7,14 +8,18 @@ export default async function handler(req: any, res: any) {
         const db = client.db("Events");
         const events = await db.collection("Profiles").find({});
         const results = await events.toArray();
-        let data = [];
+        let data: any;
         if (results.length > 0) {
-          data = await results.forEach(async (result: any, i: any) => {
-              const images = await MyImage.find({event_id: result.event_id});
-              console.log(images)
-              return {...result, images: images}
-              
+          const myPromise = new Promise(async (resolve, reject) => {
+      
+            await results.forEach(async (result: any, i: any) => {
+              const img = await getImages({event_id: result._id})
+              const loc = await getLocation({event_id: result._id})
+              resolve({...result, location: loc.location, images: JSON.stringify(img)})
+            });
           });
+            data = await myPromise
+
       } else {
           console.log(`No customers found`);
       }
