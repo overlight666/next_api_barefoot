@@ -15,7 +15,7 @@ export default async function handler(req: any, res: any) {
             await results.forEach(async (result: any, i: any) => {
               const img = await getImages({event_id: result._id})
               const loc = await getLocation({event_id: result._id})
-              resolve({...result, location: loc.location, images: JSON.stringify(img)})
+              resolve({...result, location: loc.location, images: img})
             });
           });
             data = await myPromise

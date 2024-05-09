@@ -65,7 +65,9 @@ export const deleteManyImages = (params: any) => {
 }
 
 export const getImages = async (params: any) => {
- const img = await MyImage.find({event_id: params.event_id})
+ const img = await MyImage.find({event_id: params.event_id}).then((obj: any) => {
+  return obj.map((o: any) => o.data.toString('base64')) 
+ })
  return img
 }
 
