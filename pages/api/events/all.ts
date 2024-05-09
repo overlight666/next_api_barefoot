@@ -8,18 +8,16 @@ export default async function handler(req: any, res: any) {
         const db = client.db("Events");
         const events = await db.collection("Profiles").find({});
         const results = await events.toArray();
-        let data: any[]= [];
+        let data: any[] = [];
         if (results.length > 0) {
-          const myPromise = new Promise(async (resolve, reject) => {
-      
-            await results.forEach(async (result: any, i: any) => {
+            const inner = await Promise.all(results.map(async (result: any) => {
               const img = await getImages({event_id: result._id})
               const loc = await getLocation({event_id: result._id})
-              resolve({...result, location: loc.location, images: img})
-            });
-          });
-            const d = await myPromise
-            data.push(d)
+              return ({...result, location: loc.location, images: img})
+              
+          }));
+            data = inner
+            // data.push(await myPromise)
 
       } else {
           console.log(`No customers found`);
