@@ -14,6 +14,7 @@ export default async function handler(req: any, res: any) {
         const time_start = req.body["time_start"];
         const time_end = req.body["time_end"];
         const user_id = req.body["user_id"];
+        const description = req.body["description"];
         const images = req.body["images"];
         const eventLocation = req.body["event_location"];
         console.log(req.body)
@@ -79,6 +80,7 @@ export default async function handler(req: any, res: any) {
           event_type: event_type,
           user_id: user_id,
           created_at: currentDate,
+          description: description,
         };
         const col_res = await db.collection("Profiles").insertOne(bodyObject);
         if(col_res.insertedId && images.length > 0) {
