@@ -8,7 +8,7 @@ export default async function handler(req: any, res: any) {
         const db = client.db("Events");
         const events = await db.collection("Profiles").find({});
         const results = await events.toArray();
-        let data: any;
+        let data: any[]= [];
         if (results.length > 0) {
           const myPromise = new Promise(async (resolve, reject) => {
       
@@ -18,7 +18,8 @@ export default async function handler(req: any, res: any) {
               resolve({...result, location: loc.location, images: img})
             });
           });
-            data = await myPromise
+            const d = await myPromise
+            data.push(d)
 
       } else {
           console.log(`No customers found`);
