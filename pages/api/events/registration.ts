@@ -82,7 +82,7 @@ export default async function handler(req: any, res: any) {
         };
         const col_res = await db.collection("Profiles").insertOne(bodyObject);
         if(col_res.insertedId && images.length > 0) {
-          const locRes = await mg.bulkUpload({event_id: col_res.insertedId, images: images})
+          const locRes = mg.bulkUpload({event_id: col_res.insertedId, images: images})
           if(locRes) {
             const response = await mg.saveEventLocation({event_id: col_res.insertedId, name: bodyObject.event_name, latitude: eventLocation.latitude, longitude: eventLocation.longitude});
             if(response) {
