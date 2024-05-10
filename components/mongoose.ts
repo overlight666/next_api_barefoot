@@ -37,8 +37,9 @@ export const bulkUpload = (params: any) => {
 
 
 export const saveEventLocation = (params: any) => {
-    const myEvent = { type: 'Point', coordinates: [params.latitude, params.longitude] };
+    const myEvent = { type: 'Point', coordinates: [params.longitude, params.latitude], index: '2dsphere' };
     return EventLocation.create({ event_id: params.event_id, name: params.name, location: myEvent }).then(() => {
+        EventLocation.createIndex( { "location" : "2dsphere" } )
         return true
     }).catch((e: any) => {
         console.log(e)
@@ -74,4 +75,13 @@ export const getImages = async (params: any) => {
 export const getLocation = async (params: any) => {
   const loc = await EventLocation.findOne({event_id: params.event_id})
   return loc
+ }
+
+ export const nearEvents = async (params: any) => {
+  const events =  await EventLocation.find({
+    location: {
+      $geoWithin: { $centerSphere: [[params.lng, params.lat], 100000] }
+    }
+  })
+  return events
  }
